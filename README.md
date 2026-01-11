@@ -4,13 +4,14 @@ Aplikasi Flutter untuk mencatat dan mengelola utang dengan mudah. Terintegrasi d
 
 ## 🚀 Fitur
 
-- ✅ Autentikasi pengguna (Register & Login)
+- ✅ Autentikasi dengan nomor telepon (OTP verification)
 - ✅ Mencatat utang orang lain (sebagai pemberi pinjaman)
 - ✅ Melihat utang sendiri
 - ✅ Real-time sync dengan Firebase
 - ✅ Menandai utang sebagai lunas
 - ✅ Riwayat utang per orang
 - ✅ UI modern dan responsif
+- ✅ Nomor telepon sebagai identitas utama (core master)
 
 ## 📋 Prasyarat
 
@@ -48,7 +49,8 @@ Ikuti instruksi untuk:
 1. Buka [Firebase Console](https://console.firebase.google.com/)
 2. Pilih project Anda
 3. Masuk ke **Authentication** > **Sign-in method**
-4. Aktifkan **Email/Password**
+4. Aktifkan **Phone** (Phone Number Authentication)
+5. Untuk testing, tambahkan test phone numbers di tab **Phone numbers for testing** (opsional)
 
 ### 4. Setup Firestore Database
 
@@ -65,9 +67,9 @@ Aplikasi ini menggunakan 2 collections:
 ```json
 {
   "uid": "string",
-  "email": "string",
+  "phoneNumber": "string (REQUIRED - Core Master)",
   "name": "string",
-  "phoneNumber": "string (optional)",
+  "email": "string (optional)",
   "createdAt": "timestamp"
 }
 ```
@@ -133,9 +135,12 @@ flutter run -d ios          # iOS
 
 ## 📱 Cara Penggunaan
 
-### 1. Register & Login
-- Buat akun baru dengan email dan password
-- Login dengan akun yang sudah dibuat
+### 1. Login dengan Nomor Telepon
+- Masukkan nomor telepon (format: 08xxx atau +62xxx)
+- Klik "Kirim Kode OTP"
+- Masukkan kode OTP yang diterima via SMS (6 digit)
+- Jika nomor baru, lengkapi data (nama wajib, email opsional)
+- Jika sudah terdaftar, langsung masuk ke aplikasi
 
 ### 2. Menambah Catatan Utang
 - Klik tombol **"Tambah Utang"**
@@ -158,17 +163,28 @@ flutter run -d ios          # iOS
 
 ```
 lib/
-├── main.dart                 # Entry point aplikasi
-├── firebase_options.dart     # Konfigurasi Firebase
-├── models/                   # Data models
+├── main.dart                      # Entry point aplikasi
+├── firebase_options.dart          # Konfigurasi Firebase
+├── cubit/                         # Cubit State Management
+│   ├── auth/
+│   │   ├── auth_cubit.dart       # Auth business logic
+│   │   └── auth_state.dart       # Auth states
+│   ├── debt/
+│   │   ├── debt_cubit.dart       # Debt business logic
+│   │   └── debt_state.dart       # Debt states
+│   └── user/
+│       ├── user_cubit.dart       # User business logic
+│       └── user_state.dart       # User states
+├── models/                        # Data models
 │   ├── user_model.dart
 │   └── debt_model.dart
-├── services/                 # Business logic & Firebase
+├── services/                      # Data layer & Firebase
 │   ├── auth_service.dart
 │   └── debt_service.dart
-└── screens/                  # UI Screens
+└── screens/                       # Presentation layer (UI)
     ├── auth/
-    │   ├── login_screen.dart
+    │   ├── phone_login_screen.dart
+    │   ├── otp_verification_screen.dart
     │   └── register_screen.dart
     └── home/
         ├── home_screen.dart
@@ -179,11 +195,11 @@ lib/
 ## 🎨 Teknologi yang Digunakan
 
 - **Flutter** - Framework UI
-- **Firebase Authentication** - Autentikasi user
+- **Firebase Authentication** - Autentikasi user dengan Phone Number
 - **Cloud Firestore** - Database real-time
-- **Google Fonts** - Typography
-- **Provider** - State management
-- **Intl** - Formatting currency & date
+- **Cubit** - State management (flutter_bloc)
+- **Google Fonts** - Typography (Poppins)
+- **Intl** - Formatting currency & date (Indonesia locale)
 
 ## 📝 TODO / Pengembangan Selanjutnya
 
@@ -199,10 +215,15 @@ lib/
 
 Pull requests are welcome! Untuk perubahan besar, silakan buka issue terlebih dahulu untuk mendiskusikan perubahan yang ingin dilakukan.
 
+## 📖 Dokumentasi Lengkap
+
+- **[CUBIT_ARCHITECTURE.md](docs/CUBIT_ARCHITECTURE.md)** - Penjelasan lengkap Cubit Pattern
+- **[PHONE_AUTH_GUIDE.md](docs/PHONE_AUTH_GUIDE.md)** - Panduan Phone Authentication
+
 ## 📄 Lisensi
 
 MIT License
 
 ## 👨‍💻 Developer
 
-Dikembangkan dengan ❤️ menggunakan Flutter
+Dikembangkan dengan ❤️ menggunakan Flutter + Cubit Pattern
