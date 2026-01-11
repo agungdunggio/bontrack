@@ -1,3 +1,4 @@
+import 'package:bontrack/core/utils/phone_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,32 +43,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     super.dispose();
   }
 
-  String _formatPhoneNumber(String phone) {
-    // Remove spaces and special characters
-    phone = phone.replaceAll(RegExp(r'[^\d+]'), '');
-    
-    // If starts with 0, replace with +62
-    if (phone.startsWith('0')) {
-      phone = '+62${phone.substring(1)}';
-    }
-    // If starts with 62, add +
-    else if (phone.startsWith('62') && !phone.startsWith('+')) {
-      phone = '+$phone';
-    }
-    // If doesn't start with +, add +62
-    else if (!phone.startsWith('+')) {
-      phone = '+62$phone';
-    }
-    
-    return phone;
-  }
-
   void _completeProfile() {
     // Tutup keyboard
     FocusScope.of(context).unfocus();
     
     if (_formKey.currentState!.validate()) {
-      final phoneNumber = _formatPhoneNumber(_phoneController.text.trim());
+      final phoneNumber = _phoneController.text.trim().toFormattedPhone();
       
       context.read<AuthCubit>().completeUserProfile(
         uid: widget.uid,
@@ -93,7 +74,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
         child: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthError) {
-              print("Error: ${state.message}");
               BottomToast.show(
                 context,
                 message: state.message,

@@ -64,7 +64,7 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await _authService.signInWithGoogle();
       
       if (user == null) {
-        emit(AuthUnauthenticated());
+        emit(const AuthError('Masuk dengan Google dibatalkan'));
         return;
       }
 

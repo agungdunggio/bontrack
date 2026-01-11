@@ -16,21 +16,17 @@ class AuthService {
   Future<User?> signInWithGoogle() async {
     try {
       await _googleSignIn.initialize();
-      // 1. Memicu flow autentikasi Google (Popup pilih akun)
+      
       final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
       
-      // 2. Mendapatkan detail otentikasi dari request tersebut
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      // 3. Membuat kredensial baru untuk Firebase
       final OAuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
 
-      // 4. Masuk ke Firebase dengan kredensial tersebut
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       
-      // 5. Mengembalikan objek User
       return userCredential.user;
 
     } catch (e) {
@@ -45,46 +41,53 @@ class AuthService {
     required String phoneNumber,
     required String name,
   }) async {
+    final userRef = _firestore.collection('users').doc(uid);
+
     try {
-      // Cek apakah nomor telepon sudah digunakan oleh user lain
-      final existingUserWithPhone = await _firestore
-          .collection('users')
-          .where('phoneNumber', isEqualTo: phoneNumber)
-          .limit(1)
-          .get();
-      
-      if (existingUserWithPhone.docs.isNotEmpty) {
-        final existingUid = existingUserWithPhone.docs.first.id;
-        // Jika nomor telepon dimiliki user lain (bukan user saat ini)
-        if (existingUid != uid) {
-          throw 'Nomor telepon sudah digunakan oleh akun lain';
+      return await _firestore.runTransaction((transaction) async {
+       
+        final existingUserWithPhone = await _firestore
+            .collection('users')
+            .where('phoneNumber', isEqualTo: phoneNumber)
+            .limit(1)
+            .get();
+
+        if (existingUserWithPhone.docs.isNotEmpty) {
+          final existingUid = existingUserWithPhone.docs.first.id;
+          if (existingUid != uid) {
+            throw 'Nomor telepon sudah digunakan oleh akun lain';
+          }
         }
-      }
 
-      DocumentSnapshot existingUser = await _firestore.collection('users').doc(uid).get();
-      
-      if (existingUser.exists) {
-        await _firestore.collection('users').doc(uid).update({
-          'phoneNumber': phoneNumber,
-          'name': name,
-        });
-        return UserModel.fromMap({
-          ...existingUser.data() as Map<String, dynamic>,
-          'phoneNumber': phoneNumber,
-          'name': name,
-        });
-      }
+        final userSnapshot = await transaction.get(userRef);
 
-      UserModel userModel = UserModel(
-        uid: uid,
-        phoneNumber: phoneNumber,
-        name: name,
-        email: email,
-        createdAt: DateTime.now(),
-      );
-      
-      await _firestore.collection('users').doc(uid).set(userModel.toMap());
-      return userModel;
+        if (userSnapshot.exists) {
+          final updatedData = {
+            'phoneNumber': phoneNumber,
+            'name': name,
+          };
+
+          transaction.update(userRef, updatedData);
+
+          return UserModel.fromMap({
+            ...userSnapshot.data() as Map<String, dynamic>,
+            ...updatedData,
+          });
+
+        } else {
+          final newUser = UserModel(
+            uid: uid,
+            phoneNumber: phoneNumber,
+            name: name,
+            email: email,
+            createdAt: DateTime.now(),
+          );
+
+          transaction.set(userRef, newUser.toMap());
+          
+          return newUser;
+        }
+      });
     } catch (e) {
       debugPrint('Error completing user profile: $e');
       rethrow;
@@ -96,7 +99,6 @@ class AuthService {
     required String phoneNumber,
   }) async {
     try {
-      // Cek apakah nomor telepon sudah digunakan oleh user lain
       final existingUserWithPhone = await _firestore
           .collection('users')
           .where('phoneNumber', isEqualTo: phoneNumber)
@@ -105,7 +107,6 @@ class AuthService {
       
       if (existingUserWithPhone.docs.isNotEmpty) {
         final existingUid = existingUserWithPhone.docs.first.id;
-        // Jika nomor telepon dimiliki user lain (bukan user saat ini)
         if (existingUid != uid) {
           throw 'Nomor telepon sudah digunakan oleh akun lain';
         }

@@ -81,15 +81,10 @@ class LoginScreen extends StatelessWidget {
                                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
                                 )
-                              : Image.network(
-                                  'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                                  height: 24.h,
-                                  width: 24.w,
-                                  errorBuilder: (context, error, stackTrace) => Icon(
-                                    Icons.g_mobiledata,
-                                    size: 28.sp,
-                                    color: Colors.white,
-                                  ),
+                              : Icon(
+                                  Icons.g_mobiledata,
+                                  size: 28.sp,
+                                  color: Colors.white,
                                 ),
                           label: Text(
                             isLoading ? 'Memproses...' : 'Masuk dengan Google',

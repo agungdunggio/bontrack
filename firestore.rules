@@ -29,7 +29,6 @@ service cloud.firestore {
       // - Email is verified
       // - Creating their own document (userId == auth.uid)
       allow create: if isSignedIn() 
-                    && isEmailVerified()
                     && isOwner(userId)
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.email == request.auth.token.email;

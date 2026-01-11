@@ -60,10 +60,9 @@ class MyApp extends StatelessWidget {
               theme: AppThemes.light,
               darkTheme: AppThemes.dark,
               themeMode: ThemeMode.system,
-              home: child!,
+              home: const AuthWrapper(),
             );
           },
-        child:  const AuthWrapper(),
         ),
       ),
     );
