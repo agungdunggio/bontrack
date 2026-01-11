@@ -23,21 +23,12 @@ class AuthAuthenticated extends AuthState {
 
 class AuthUnauthenticated extends AuthState {}
 
-class AuthEmailVerificationSent extends AuthState {
-  final String email;
-
-  const AuthEmailVerificationSent(this.email);
-
-  @override
-  List<Object?> get props => [email];
-}
-
-class AuthEmailVerified extends AuthState {
+class AuthNeedsProfile extends AuthState {
   final String uid;
   final String email;
   final String? displayName; // Nama dari Google Sign In (opsional)
 
-  const AuthEmailVerified({
+  const AuthNeedsProfile({
     required this.uid,
     required this.email,
     this.displayName,
@@ -45,21 +36,6 @@ class AuthEmailVerified extends AuthState {
 
   @override
   List<Object?> get props => [uid, email, displayName];
-}
-
-class AuthPhoneAdded extends AuthState {
-  final String uid;
-  final String email;
-  final String phoneNumber;
-
-  const AuthPhoneAdded({
-    required this.uid,
-    required this.email,
-    required this.phoneNumber,
-  });
-
-  @override
-  List<Object?> get props => [uid, email, phoneNumber];
 }
 
 class AuthError extends AuthState {

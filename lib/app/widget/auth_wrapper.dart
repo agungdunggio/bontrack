@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:bontrack/core/cubit/auth/auth_cubit.dart';
 import 'package:bontrack/core/cubit/auth/auth_state.dart';
 import 'package:bontrack/features/auth/page/complete_profile_screen.dart';
-import 'package:bontrack/features/auth/page/email_login_screen.dart';
-import 'package:bontrack/features/auth/page/email_verification_screen.dart';
+import 'package:bontrack/features/auth/page/login_screen.dart';
 import 'package:bontrack/features/home/page/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -181,11 +180,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           return const HomeScreen();
         }
         
-        if (state is AuthEmailVerificationSent) {
-          return EmailVerificationScreen(email: state.email);
-        }
-        
-        if (state is AuthEmailVerified) {
+        if (state is AuthNeedsProfile) {
           return CompleteProfileScreen(
             uid: state.uid,
             email: state.email,
@@ -193,7 +188,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           );
         }
         
-        return const EmailLoginScreen();
+        return const LoginScreen();
       },
     );
   }

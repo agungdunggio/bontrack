@@ -153,7 +153,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Email Terverifikasi',
+                                'Akun Google Terhubung',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
