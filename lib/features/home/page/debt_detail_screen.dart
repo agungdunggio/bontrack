@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../../models/debt_model.dart';
-import '../../services/debt_service.dart';
+import '../../../core/models/debt_model.dart';
+import '../../../core/services/debt_service.dart';
 
 class DebtDetailScreen extends StatefulWidget {
   final String personId;
@@ -155,8 +155,8 @@ class _DebtDetailScreenState extends State<DebtDetailScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.7),
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -172,7 +172,7 @@ class _DebtDetailScreenState extends State<DebtDetailScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),

@@ -1,0 +1,85 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function untuk check apakah user sudah login
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper function untuk check apakah user adalah owner dari document
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // Helper function untuk check apakah email sudah diverifikasi
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+    
+    // ============ USERS COLLECTION ============
+    match /users/{userId} {
+      // Allow read if:
+      // - User is signed in (bisa baca semua user untuk select debtor)
+      allow read: if isSignedIn();
+      
+      // Allow create if:
+      // - User is signed in
+      // - Email is verified
+      // - Creating their own document (userId == auth.uid)
+      allow create: if isSignedIn() 
+                    && isOwner(userId)
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.email == request.auth.token.email;
+      
+      // Allow update if:
+      // - User is owner of the document
+      // - Email is verified
+      // - Not changing uid or email
+      allow update: if isOwner(userId)
+                    && isEmailVerified()
+                    && request.resource.data.uid == resource.data.uid
+                    && request.resource.data.email == resource.data.email;
+      
+      // Allow delete if:
+      // - User is owner (untuk future feature delete account)
+      allow delete: if isOwner(userId);
+    }
+    
+    // ============ DEBTS COLLECTION ============
+    match /debts/{debtId} {
+      // Allow read if:
+      // - User is the creditor (pemberi utang)
+      // - Or user is the debtor (penerima utang)
+      allow read: if isSignedIn() 
+                  && (resource.data.creditorId == request.auth.uid 
+                      || resource.data.debtorId == request.auth.uid);
+      
+      // Allow create if:
+      // - User is signed in and email verified
+      // - User is the creditor (yang membuat entry adalah pemberi utang)
+      allow create: if isSignedIn()
+                    && isEmailVerified()
+                    && request.resource.data.creditorId == request.auth.uid;
+      
+      // Allow update if:
+      // - User is the creditor (hanya pemberi utang yang bisa update)
+      allow update: if isSignedIn()
+                    && isEmailVerified()
+                    && resource.data.creditorId == request.auth.uid
+                    && request.resource.data.creditorId == resource.data.creditorId;
+      
+      // Allow delete if:
+      // - User is the creditor (hanya pemberi utang yang bisa delete)
+      allow delete: if isSignedIn()
+                    && resource.data.creditorId == request.auth.uid;
+    }
+    
+    // Block all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

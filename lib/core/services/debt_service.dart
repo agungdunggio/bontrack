@@ -19,11 +19,27 @@ class DebtService {
     return _firestore
         .collection('debts')
         .where('creditorId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
+        // Temporary: orderBy disabled sampai index selesai building
+        // .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => DebtModel.fromMap(doc.data()))
-            .toList());
+        .handleError((error) {
+          print('❌ Firestore error in getMyCredits: $error');
+          throw error;
+        })
+        .map((snapshot) {
+          try {
+            // Sort di client side
+            final debts = snapshot.docs
+                .map((doc) => DebtModel.fromMap(doc.data()))
+                .toList();
+            debts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+            print('✅ getMyCredits: Loaded ${debts.length} credits');
+            return debts;
+          } catch (e) {
+            print('❌ Error parsing credits: $e');
+            return <DebtModel>[];
+          }
+        });
   }
 
   // Get debts where current user is the debtor (yang punya utang)
@@ -31,11 +47,27 @@ class DebtService {
     return _firestore
         .collection('debts')
         .where('debtorId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
+        // Temporary: orderBy disabled sampai index selesai building
+        // .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => DebtModel.fromMap(doc.data()))
-            .toList());
+        .handleError((error) {
+          print('❌ Firestore error in getMyDebts: $error');
+          throw error;
+        })
+        .map((snapshot) {
+          try {
+            // Sort di client side
+            final debts = snapshot.docs
+                .map((doc) => DebtModel.fromMap(doc.data()))
+                .toList();
+            debts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+            print('✅ getMyDebts: Loaded ${debts.length} debts');
+            return debts;
+          } catch (e) {
+            print('❌ Error parsing debts: $e');
+            return <DebtModel>[];
+          }
+        });
   }
 
   // Get debts by debtor (untuk melihat semua utang seseorang)
@@ -43,11 +75,17 @@ class DebtService {
     return _firestore
         .collection('debts')
         .where('debtorId', isEqualTo: debtorId)
-        .orderBy('createdAt', descending: true)
+        // Temporary: orderBy disabled sampai index selesai building
+        // .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => DebtModel.fromMap(doc.data()))
-            .toList());
+        .map((snapshot) {
+          // Sort di client side
+          final debts = snapshot.docs
+              .map((doc) => DebtModel.fromMap(doc.data()))
+              .toList();
+          debts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return debts;
+        });
   }
 
   // Mark debt as paid

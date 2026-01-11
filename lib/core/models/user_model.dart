@@ -1,15 +1,15 @@
 class UserModel {
   final String uid;
-  final String email;
+  final String phoneNumber; // Core master - nomor telepon
   final String name;
-  final String? phoneNumber;
+  final String? email; // Optional
   final DateTime createdAt;
 
   UserModel({
     required this.uid,
-    required this.email,
+    required this.phoneNumber,
     required this.name,
-    this.phoneNumber,
+    this.email,
     required this.createdAt,
   });
 
@@ -17,9 +17,9 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'email': email,
-      'name': name,
       'phoneNumber': phoneNumber,
+      'name': name,
+      'email': email,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -28,25 +28,25 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'] ?? '',
-      email: map['email'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
       name: map['name'] ?? '',
-      phoneNumber: map['phoneNumber'],
+      email: map['email'],
       createdAt: DateTime.parse(map['createdAt']),
     );
   }
 
   UserModel copyWith({
     String? uid,
-    String? email,
-    String? name,
     String? phoneNumber,
+    String? name,
+    String? email,
     DateTime? createdAt,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
-      email: email ?? this.email,
-      name: name ?? this.name,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      name: name ?? this.name,
+      email: email ?? this.email,
       createdAt: createdAt ?? this.createdAt,
     );
   }
