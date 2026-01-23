@@ -7,9 +7,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'firebase_options.dart';
 import 'core/services/auth_service.dart';
-import 'core/services/debt_service.dart';
 import 'core/cubit/auth/auth_cubit.dart';
-import 'core/cubit/debt/debt_cubit.dart';
 import 'core/cubit/user/user_cubit.dart';
 
 void main() async {
@@ -29,7 +27,6 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthService()),
-        RepositoryProvider(create: (context) => DebtService()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -37,11 +34,6 @@ class MyApp extends StatelessWidget {
             create: (context) => AuthCubit(
               authService: context.read<AuthService>(),
             )..checkAuthStatus(),
-          ),
-          BlocProvider(
-            create: (context) => DebtCubit(
-              debtService: context.read<DebtService>(),
-            ),
           ),
           BlocProvider(
             create: (context) => UserCubit(
