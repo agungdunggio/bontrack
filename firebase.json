@@ -1,1 +1,47 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"bontrack-de5cd","appId":"1:635581853667:android:c389de4af2068d3bbb3ad6","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"bontrack-de5cd","appId":"1:635581853667:ios:8753e69442a89c20bb3ad6","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"bontrack-de5cd","configurations":{"android":"1:635581853667:android:c389de4af2068d3bbb3ad6","ios":"1:635581853667:ios:8753e69442a89c20bb3ad6"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "bontrack-de5cd",
+          "appId": "1:635581853667:android:c389de4af2068d3bbb3ad6",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "bontrack-de5cd",
+          "appId": "1:635581853667:ios:8753e69442a89c20bb3ad6",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "bontrack-de5cd",
+          "configurations": {
+            "android": "1:635581853667:android:c389de4af2068d3bbb3ad6",
+            "ios": "1:635581853667:ios:8753e69442a89c20bb3ad6"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ]
+}
