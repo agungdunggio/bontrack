@@ -1,4 +1,4 @@
-import 'package:bontrack/features/bon/page/bon_page.dart';
+import 'package:bontrack/features/bon/presentation/page/bon_page.dart';
 import 'package:bontrack/features/home/page/home_tab_page.dart';
 import 'package:bontrack/features/profile/page/profile_page.dart';
 import 'package:flutter/material.dart';
