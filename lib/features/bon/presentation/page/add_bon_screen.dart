@@ -469,15 +469,6 @@ class _AddBonScreenState extends State<AddBonScreen> {
               // Bottom Action Button
               Container(
                 padding: EdgeInsets.all(24.w),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 20,
-                      offset: const Offset(0, -5),
-                    ),
-                  ],
-                ),
                 child: BlocBuilder<BonCubit, BonState>(
                   builder: (context, state) {
                     final isLoading = state is BonLoading;
