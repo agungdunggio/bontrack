@@ -79,6 +79,36 @@ class BonCubit extends Cubit<BonState> {
     _utangSubscription = null;
   }
 
+  Future<void> createBon({
+    required String creditorId,
+    required String creditorName,
+    required String debtorName,
+    String? debtorPhoneNumber,
+    required int amount,
+    required String description,
+  }) async {
+    try {
+      emit(BonLoading());
+      
+      await _bonService.createBon(
+        creditorId: creditorId,
+        creditorName: creditorName,
+        debtorName: debtorName,
+        debtorPhoneNumber: debtorPhoneNumber,
+        amount: amount,
+        description: description,
+      );
+      
+      emit(BonLoaded(
+        piutangList: _cachedPiutangList ?? [],
+        utangList: _cachedUtangList ?? [],
+      ));
+    } catch (e) {
+      debugPrint('Error creating bon: $e');
+      emit(BonError('Gagal menambahkan utang/piutang: ${e.toString()}'));
+    }
+  }
+
   @override
   Future<void> close() {
     stopListening();

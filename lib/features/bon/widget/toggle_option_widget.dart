@@ -34,11 +34,11 @@ class ToggleOptionWidget extends StatelessWidget
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedSwitcher(
+            AnimatedContainer(
               duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
               child: Icon(
                 icon,
-                key: ValueKey(isSelected),
                 color: isSelected
                     ? theme.colorScheme.onPrimary
                     : theme.colorScheme.onSurface.withOpacity(0.6),

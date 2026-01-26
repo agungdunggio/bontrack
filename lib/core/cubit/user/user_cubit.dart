@@ -9,7 +9,6 @@ class UserCubit extends Cubit<UserState> {
       : _authService = authService,
         super(UserInitial());
 
-  // Load all users
   Future<void> loadAllUsers() async {
     emit(UserLoading());
 
@@ -25,7 +24,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  // Load specific user
   Future<void> loadUser(String uid) async {
     emit(UserLoading());
 
@@ -45,7 +43,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  // Search users by name or phone
   Future<void> searchUsers(String query) async {
     emit(UserLoading());
 
@@ -54,7 +51,7 @@ class UserCubit extends Cubit<UserState> {
       final filteredUsers = users.where((user) {
         final searchQuery = query.toLowerCase();
         return user.name.toLowerCase().contains(searchQuery) ||
-            user.phoneNumber.toLowerCase().contains(searchQuery);
+            user.phoneHash.toLowerCase().contains(searchQuery);
       }).toList();
 
       if (!isClosed) {

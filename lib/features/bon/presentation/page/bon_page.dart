@@ -1,6 +1,7 @@
 import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:bontrack/features/bon/presentation/content/piutang_content.dart';
 import 'package:bontrack/features/bon/presentation/content/utang_content.dart';
+import 'package:bontrack/features/bon/presentation/page/add_bon_screen.dart';
 import 'package:bontrack/features/bon/widget/modern_toggle_switch_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,24 @@ class BonPage extends StatefulWidget {
 
 class _BonPageState extends State<BonPage> {
   BonType _selectedType = BonType.piutang;
+  DateTime? _lastTapTime;
+
+  void _handleTypeChange(BonType type) {
+
+    if (_selectedType == type) return;
+    
+
+    final now = DateTime.now();
+    if (_lastTapTime != null && 
+        now.difference(_lastTapTime!).inMilliseconds < 200) {
+      return;
+    }
+    _lastTapTime = now;
+    
+    setState(() {
+      _selectedType = type;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +50,7 @@ class _BonPageState extends State<BonPage> {
             padding: EdgeInsets.all(16.w),
             child: ModernToggleSwitchWidget(
               selectedType: _selectedType,
-              onChanged: (BonType type) {
-                setState(() {
-                  _selectedType = type;
-                });
-              },
+              onChanged: _handleTypeChange,
             ),
           ),
           Expanded(
@@ -47,7 +62,12 @@ class _BonPageState extends State<BonPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // TODO: Implement add debt/credit
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddBonScreen(),
+            ),
+          );
         },
         icon: const Icon(Icons.add),
         label: Text(

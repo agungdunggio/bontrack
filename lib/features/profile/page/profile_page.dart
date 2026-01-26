@@ -57,14 +57,6 @@ class ProfilePage extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                 ),
-                SizedBox(height: 4.h),
-                Text(
-                  user.phoneNumber,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
                 SizedBox(height: 32.h),
                 ProfileMenuWidget(
                   icon: Icons.edit_outlined,
