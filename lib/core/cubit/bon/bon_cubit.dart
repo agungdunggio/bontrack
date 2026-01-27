@@ -14,8 +14,8 @@ class BonCubit extends Cubit<BonState> {
   List<BonModel>? _cachedUtangList;
 
   BonCubit({required BonService bonService})
-      : _bonService = bonService,
-        super(BonInitial());
+    : _bonService = bonService,
+      super(BonInitial());
 
   void startListening(String userId) {
     if (_currentUserId == userId && state is BonLoaded) {
@@ -30,31 +30,32 @@ class BonCubit extends Cubit<BonState> {
     _cachedUtangList = null;
     emit(BonLoading());
 
-    _piutangSubscription = _bonService.streamPiutangList(userId).listen(
-      (piutangList) {
-        _updateState(piutangList: piutangList);
-      },
-      onError: (error) {
-        debugPrint('Error in piutang stream: $error');
-        emit(BonError('Gagal memuat data piutang: ${error.toString()}'));
-      },
-    );
+    _piutangSubscription = _bonService
+        .streamPiutangList(userId)
+        .listen(
+          (piutangList) {
+            _updateState(piutangList: piutangList);
+          },
+          onError: (error) {
+            debugPrint('Error in piutang stream: $error');
+            emit(BonError('Gagal memuat data piutang: ${error.toString()}'));
+          },
+        );
 
-    _utangSubscription = _bonService.streamUtangList(userId).listen(
-      (utangList) {
-        _updateState(utangList: utangList);
-      },
-      onError: (error) {
-        debugPrint('Error in utang stream: $error');
-        emit(BonError('Gagal memuat data utang: ${error.toString()}'));
-      },
-    );
+    _utangSubscription = _bonService
+        .streamUtangList(userId)
+        .listen(
+          (utangList) {
+            _updateState(utangList: utangList);
+          },
+          onError: (error) {
+            debugPrint('Error in utang stream: $error');
+            emit(BonError('Gagal memuat data utang: ${error.toString()}'));
+          },
+        );
   }
 
-  void _updateState({
-    List<BonModel>? piutangList,
-    List<BonModel>? utangList,
-  }) {
+  void _updateState({List<BonModel>? piutangList, List<BonModel>? utangList}) {
     if (piutangList != null) {
       _cachedPiutangList = piutangList;
     }
@@ -66,10 +67,9 @@ class BonCubit extends Cubit<BonState> {
       return;
     }
 
-    emit(BonLoaded(
-      piutangList: _cachedPiutangList!,
-      utangList: _cachedUtangList!,
-    ));
+    emit(
+      BonLoaded(piutangList: _cachedPiutangList!, utangList: _cachedUtangList!),
+    );
   }
 
   void stopListening() {
@@ -89,7 +89,7 @@ class BonCubit extends Cubit<BonState> {
   }) async {
     try {
       emit(BonLoading());
-      
+
       await _bonService.createBon(
         creditorId: creditorId,
         creditorName: creditorName,
@@ -98,14 +98,33 @@ class BonCubit extends Cubit<BonState> {
         amount: amount,
         description: description,
       );
-      
-      emit(BonLoaded(
-        piutangList: _cachedPiutangList ?? [],
-        utangList: _cachedUtangList ?? [],
-      ));
+
+      emit(
+        BonLoaded(
+          piutangList: _cachedPiutangList ?? [],
+          utangList: _cachedUtangList ?? [],
+        ),
+      );
     } catch (e) {
       debugPrint('Error creating bon: $e');
       emit(BonError('Gagal menambahkan utang/piutang: ${e.toString()}'));
+    }
+  }
+
+  Future<void> markAsPaid(String bonId) async {
+    try {
+      await _bonService.markAsPaid(bonId);
+    } catch (e) {
+      debugPrint('Error marking bon as paid: $e');
+      emit(BonError('Gagal memperbarui status: ${e.toString()}'));
+      if (_cachedPiutangList != null && _cachedUtangList != null) {
+        emit(
+          BonLoaded(
+            piutangList: _cachedPiutangList!,
+            utangList: _cachedUtangList!,
+          ),
+        );
+      }
     }
   }
 

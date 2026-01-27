@@ -299,7 +299,7 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                         margin: EdgeInsets.all(8.w),
                                         decoration: BoxDecoration(
                                           color: theme.colorScheme.primary
-                                              .withOpacity(0.1),
+                                              .withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(
                                             12.r,
                                           ),
@@ -355,8 +355,9 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16.r),
                                   borderSide: BorderSide(
-                                    color: theme.colorScheme.primary
-                                        .withOpacity(0.5),
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.5,
+                                    ),
                                     width: 1.5,
                                   ),
                                 ),
@@ -447,8 +448,9 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16.r),
                                   borderSide: BorderSide(
-                                    color: theme.colorScheme.primary
-                                        .withOpacity(0.5),
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.5,
+                                    ),
                                     width: 1.5,
                                   ),
                                 ),

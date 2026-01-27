@@ -16,9 +16,7 @@ class BonService {
           .orderBy('createdAt', descending: true)
           .get();
 
-      return snapshot.docs
-          .map((doc) => BonModel.fromMap(doc.data()))
-          .toList();
+      return snapshot.docs.map((doc) => BonModel.fromMap(doc.data())).toList();
     } catch (e) {
       debugPrint('Error getting piutang list: $e');
       return [];
@@ -33,9 +31,7 @@ class BonService {
           .orderBy('createdAt', descending: true)
           .get();
 
-      return snapshot.docs
-          .map((doc) => BonModel.fromMap(doc.data()))
-          .toList();
+      return snapshot.docs.map((doc) => BonModel.fromMap(doc.data())).toList();
     } catch (e) {
       debugPrint('Error getting utang list: $e');
       return [];
@@ -48,9 +44,10 @@ class BonService {
         .where('creditorId', isEqualTo: userId)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => BonModel.fromMap(doc.data()))
-            .toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => BonModel.fromMap(doc.data())).toList(),
+        );
   }
 
   Stream<List<BonModel>> streamUtangList(String userId) {
@@ -59,14 +56,17 @@ class BonService {
         .where('debtorId', isEqualTo: userId)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => BonModel.fromMap(doc.data()))
-            .toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => BonModel.fromMap(doc.data())).toList(),
+        );
   }
 
   Future<UserModel?> getUserByPhone(String phoneNumber) async {
     try {
-      final phoneHash = phoneNumber.toPhoneHashWithSalt(AppConfig.getPhoneHashSalt());
+      final phoneHash = phoneNumber.toPhoneHashWithSalt(
+        AppConfig.getPhoneHashSalt(),
+      );
       final snapshot = await _firestore
           .collection('users')
           .where('phoneHash', isEqualTo: phoneHash)
@@ -74,9 +74,7 @@ class BonService {
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        return UserModel.fromMap(
-          snapshot.docs.first.data(),
-        );
+        return UserModel.fromMap(snapshot.docs.first.data());
       }
       return null;
     } catch (e) {
@@ -111,9 +109,12 @@ class BonService {
         finalDebtorName = registeredUser.name;
       } else {
         final phoneHash = debtorPhoneNumber != null
-            ? debtorPhoneNumber.toPhoneHashWithSalt(AppConfig.getPhoneHashSalt())
+            ? debtorPhoneNumber.toPhoneHashWithSalt(
+                AppConfig.getPhoneHashSalt(),
+              )
             : 'no_phone';
-        debtorId = 'temp_${debtorName.toLowerCase().replaceAll(' ', '_')}_$phoneHash';
+        debtorId =
+            'temp_${debtorName.toLowerCase().replaceAll(' ', '_')}_$phoneHash';
       }
 
       final bon = BonModel(
@@ -132,6 +133,18 @@ class BonService {
       await _firestore.collection('bons').doc(bonId).set(bon.toMap());
     } catch (e) {
       debugPrint('Error creating bon: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> markAsPaid(String bonId) async {
+    try {
+      await _firestore.collection('bons').doc(bonId).update({
+        'isPaid': true,
+        'paidAt': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      debugPrint('Error marking bon as paid: $e');
       rethrow;
     }
   }

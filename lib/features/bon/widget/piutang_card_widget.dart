@@ -1,17 +1,17 @@
 import 'package:bontrack/core/models/bon_model.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
 import 'package:bontrack/core/utils/date_formatter.dart';
+import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
+import 'package:bontrack/features/bon/presentation/page/bon_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PiutangCardWidget extends StatelessWidget {
   final BonModel bon;
 
-  const PiutangCardWidget({
-    super.key,
-    required this.bon,
-  });
+  const PiutangCardWidget({super.key, required this.bon});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +19,21 @@ class PiutangCardWidget extends StatelessWidget {
 
     return Card(
       margin: EdgeInsets.only(bottom: 12.h),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       child: InkWell(
         onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BonDetailScreen(
+                bon: bon,
+                isPiutang: true,
+                onMarkAsPaid: () {
+                  context.read<BonCubit>().markAsPaid(bon.id);
+                },
+              ),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(12.r),
         child: Padding(
@@ -64,8 +74,8 @@ class PiutangCardWidget extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: bon.isPaid
-                          ? Colors.green.withOpacity(0.1)
-                          : Colors.orange.withOpacity(0.1),
+                          ? Colors.green.withValues(alpha: 0.1)
+                          : Colors.orange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
@@ -73,7 +83,9 @@ class PiutangCardWidget extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
-                        color: bon.isPaid ? Colors.green[700] : Colors.orange[700],
+                        color: bon.isPaid
+                            ? Colors.green[700]
+                            : Colors.orange[700],
                       ),
                     ),
                   ),
@@ -108,10 +120,7 @@ class PiutangCardWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: Colors.grey[300]!,
-                      width: 1,
-                    ),
+                    border: Border.all(color: Colors.grey[300]!, width: 1),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

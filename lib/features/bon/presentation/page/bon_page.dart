@@ -19,17 +19,15 @@ class _BonPageState extends State<BonPage> {
   DateTime? _lastTapTime;
 
   void _handleTypeChange(BonType type) {
-
     if (_selectedType == type) return;
-    
 
     final now = DateTime.now();
-    if (_lastTapTime != null && 
+    if (_lastTapTime != null &&
         now.difference(_lastTapTime!).inMilliseconds < 200) {
       return;
     }
     _lastTapTime = now;
-    
+
     setState(() {
       _selectedType = type;
     });
@@ -64,9 +62,7 @@ class _BonPageState extends State<BonPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AddBonScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const AddBonScreen()),
           );
         },
         icon: const Icon(Icons.add),
@@ -78,4 +74,3 @@ class _BonPageState extends State<BonPage> {
     );
   }
 }
-
