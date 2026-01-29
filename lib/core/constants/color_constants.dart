@@ -11,9 +11,9 @@ class AppColors {
   static const Color lightSecondaryText = Color(0xFF6E6E73);
   static const Color lightTextField = Color(0xFFF2F2F4);
   static const Color lightDisabled = Color(0xFFBDBDBD);
-  static const Color lightOverlay = Color(0x33000000); 
+  static const Color lightOverlay = Color(0x33000000);
   static const Color lightDivider = Color(0xFFE5E5EA);
-  
+
   // --- Dark Theme ---
   static const Color darkBackground = Color(0xFF121212);
   static const Color darkSurface = Color(0xFF1C1C1E);
@@ -25,7 +25,7 @@ class AppColors {
   static const Color darkElevation = Color(0x1AFFFFFF);
   static const Color darkDivider  = Color(0xFF2C2C2E);  
 
-    // --- Color ---
+  // --- Color ---
   static const Color success = Color(0xFF4CAF50); // Hijau
   static const Color warning = Color(0xFFFFC107); // Kuning
   static const Color error   = Color(0xFFEF4444); // Merah
@@ -33,6 +33,4 @@ class AppColors {
 
   // --- Destructive ---
   static const Color destructive = Color(0xFFDC2626);
-
-
 }
