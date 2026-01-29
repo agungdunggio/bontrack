@@ -47,8 +47,8 @@ service cloud.firestore {
       allow delete: if isOwner(userId);
     }
     
-    // ============ DEBTS COLLECTION ============
-    match /debts/{debtId} {
+    // ============ BONS COLLECTION ============
+    match /bons/{bonId} {
       // Allow read if:
       // - User is the creditor (pemberi utang)
       // - Or user is the debtor (penerima utang)

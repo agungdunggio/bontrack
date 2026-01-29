@@ -1,34 +1,36 @@
 class UserModel {
   final String uid;
-  final String phoneNumber; // Core master - nomor telepon
+  final String phoneHash;
+  final String phoneLast3; 
   final String name;
-  final String? email; // Optional
+  final String? email;
   final DateTime createdAt;
 
   UserModel({
     required this.uid,
-    required this.phoneNumber,
+    required this.phoneHash,
+    required this.phoneLast3,
     required this.name,
     this.email,
     required this.createdAt,
   });
 
-  // Convert to Map for Firestore
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'phoneNumber': phoneNumber,
+      'phoneHash': phoneHash,
+      'phoneLast3': phoneLast3,
       'name': name,
       'email': email,
       'createdAt': createdAt.toIso8601String(),
     };
   }
 
-  // Create from Firestore document
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'] ?? '',
-      phoneNumber: map['phoneNumber'] ?? '',
+      phoneHash: map['phoneHash'] ?? '',
+      phoneLast3: map['phoneLast3'] ?? '',
       name: map['name'] ?? '',
       email: map['email'],
       createdAt: DateTime.parse(map['createdAt']),
@@ -37,14 +39,16 @@ class UserModel {
 
   UserModel copyWith({
     String? uid,
-    String? phoneNumber,
+    String? phoneHash,
+    String? phoneLast3,
     String? name,
     String? email,
     DateTime? createdAt,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
+      phoneHash: phoneHash ?? this.phoneHash,
+      phoneLast3: phoneLast3 ?? this.phoneLast3,
       name: name ?? this.name,
       email: email ?? this.email,
       createdAt: createdAt ?? this.createdAt,

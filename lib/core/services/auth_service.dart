@@ -1,3 +1,5 @@
+import 'package:bontrack/core/constants/app_config.dart';
+import 'package:bontrack/core/utils/phone_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +48,10 @@ class AuthService {
     try {
       return await _firestore.runTransaction((transaction) async {
        
+        final phoneHash = phoneNumber.toPhoneHashWithSalt(AppConfig.getPhoneHashSalt());
         final existingUserWithPhone = await _firestore
             .collection('users')
-            .where('phoneNumber', isEqualTo: phoneNumber)
+            .where('phoneHash', isEqualTo: phoneHash)
             .limit(1)
             .get();
 
@@ -62,8 +65,11 @@ class AuthService {
         final userSnapshot = await transaction.get(userRef);
 
         if (userSnapshot.exists) {
+          final phoneHash = phoneNumber.toPhoneHashWithSalt(AppConfig.getPhoneHashSalt());
+          final phoneLast3 = phoneNumber.getLast3Digits();
           final updatedData = {
-            'phoneNumber': phoneNumber,
+            'phoneHash': phoneHash,
+            'phoneLast3': phoneLast3,
             'name': name,
           };
 
@@ -75,9 +81,12 @@ class AuthService {
           });
 
         } else {
+          final phoneHash = phoneNumber.toPhoneHashWithSalt(AppConfig.getPhoneHashSalt());
+          final phoneLast3 = phoneNumber.getLast3Digits();
           final newUser = UserModel(
             uid: uid,
-            phoneNumber: phoneNumber,
+            phoneHash: phoneHash,
+            phoneLast3: phoneLast3,
             name: name,
             email: email,
             createdAt: DateTime.now(),
@@ -99,9 +108,11 @@ class AuthService {
     required String phoneNumber,
   }) async {
     try {
+      final phoneHash = phoneNumber.toPhoneHashWithSalt(AppConfig.getPhoneHashSalt());
+      
       final existingUserWithPhone = await _firestore
           .collection('users')
-          .where('phoneNumber', isEqualTo: phoneNumber)
+          .where('phoneHash', isEqualTo: phoneHash)
           .limit(1)
           .get();
       
@@ -112,8 +123,11 @@ class AuthService {
         }
       }
 
+      final phoneLast3 = phoneNumber.getLast3Digits();
       await _firestore.collection('users').doc(uid).update({
+        'phoneHash': phoneHash,
         'phoneNumber': phoneNumber,
+        'phoneLast3': phoneLast3,
       });
     } catch (e) {
       debugPrint('Error updating phone number: $e');
@@ -134,11 +148,11 @@ class AuthService {
     }
   }
 
-  Future<UserModel?> getUserByPhone(String phoneNumber) async {
+  Future<UserModel?> getUserByPhone(String phoneHash) async {
     try {
       QuerySnapshot snapshot = await _firestore
           .collection('users')
-          .where('phoneNumber', isEqualTo: phoneNumber)
+          .where('phoneHash', isEqualTo: phoneHash)
           .limit(1)
           .get();
       

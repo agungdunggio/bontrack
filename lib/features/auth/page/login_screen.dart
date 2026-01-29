@@ -12,7 +12,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       body: SafeArea(
         child: BlocListener<AuthCubit, AuthState>(
@@ -71,14 +71,18 @@ class LoginScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: isLoading
                               ? null
-                              : () => context.read<AuthCubit>().signInWithGoogle(),
+                              : () => context
+                                    .read<AuthCubit>()
+                                    .signInWithGoogle(),
                           icon: isLoading
                               ? SizedBox(
                                   height: 24.h,
                                   width: 24.w,
                                   child: const CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
                                   ),
                                 )
                               : Icon(
@@ -91,6 +95,7 @@ class LoginScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(

@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "debts",
+      "collectionGroup": "bons",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "collectionGroup": "debts",
+      "collectionGroup": "bons",
       "queryScope": "COLLECTION",
       "fields": [
         {
