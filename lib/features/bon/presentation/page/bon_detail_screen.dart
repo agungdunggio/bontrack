@@ -1,5 +1,7 @@
 import 'package:bontrack/app/widget/info_row.dart';
 import 'package:bontrack/app/widget/time_line_item.dart';
+import 'package:bontrack/core/constants/color_constants.dart';
+import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:bontrack/core/models/bon_model.dart';
 import 'package:bontrack/features/bon/widget/action_section_widget.dart';
 import 'package:bontrack/features/bon/widget/amount_header_widget.dart';
@@ -10,46 +12,45 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BonDetailScreen extends StatelessWidget {
   final BonModel bon;
-  final bool isPiutang;
+  final BonType type;
   final VoidCallback? onMarkAsPaid;
 
   const BonDetailScreen({
     super.key,
     required this.bon,
-    this.isPiutang = false,
+    this.type = BonType.piutang,
     this.onMarkAsPaid,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
-    final surfaceColor = isDarkMode
-        ? Colors.black
-        : const Color(0xFFF2F2F7); // iOS Grouped BG
-    final cardColor = isDarkMode ? const Color(0xFF1C1C1E) : Colors.white;
+    // Use theme colors
+    final surfaceColor = theme.scaffoldBackgroundColor;
+    final cardColor = theme.cardTheme.color ?? theme.colorScheme.surface;
 
     return Scaffold(
       backgroundColor: surfaceColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor:
+            Colors.transparent, // Keep transparent for floating look
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 16.sp,
-            color: theme.iconTheme.color,
+            color: theme.appBarTheme.foregroundColor,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Detail Bon',
-          style: GoogleFonts.poppins(
+          style: theme.textTheme.titleLarge?.copyWith(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
-            color: theme.textTheme.bodyLarge?.color,
+            color: theme.appBarTheme.foregroundColor,
           ),
         ),
       ),
@@ -65,7 +66,7 @@ class BonDetailScreen extends StatelessWidget {
 
                   AmountHeaderWidget(
                     bon: bon,
-                    isPiutang: isPiutang,
+                    type: type,
                     theme: theme,
                   ),
 
@@ -86,7 +87,7 @@ class BonDetailScreen extends StatelessWidget {
       ),
       bottomNavigationBar: ActionSectionWidget(
         bon: bon,
-        isPiutang: isPiutang,
+        type: type,
         theme: theme,
         onMarkAsPaid: onMarkAsPaid,
         surfaceColor: cardColor,
@@ -114,7 +115,7 @@ class _InfoGroup extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: theme.shadowColor.withAlpha(30),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -127,31 +128,22 @@ class _InfoGroup extends StatelessWidget {
             value: DateFormat('d MMM yyyy, HH:mm').format(bon.createdAt),
             theme: theme,
           ),
-          Divider(
-            height: 1,
-            color: Colors.grey.withValues(alpha: 0.1),
-            indent: 16.w,
-          ),
+          Divider(height: 1, color: theme.dividerTheme.color, indent: 16.w),
           InfoRow(
             label: 'Deskripsi',
             value: bon.description.isNotEmpty ? bon.description : '-',
             theme: theme,
             isMultiLine: true,
           ),
-          Divider(
-            height: 1,
-            color: Colors.grey.withValues(alpha: 0.1),
-            indent: 16.w,
-          ),
+          Divider(height: 1, color: theme.dividerTheme.color, indent: 16.w),
           InfoRow(
             label: 'ID Transaksi',
-            value:
-                '#${bon.id.substring(max(0, bon.id.length - 8))}',
+            value: '#${bon.id.substring(max(0, bon.id.length - 8))}',
             theme: theme,
             valueStyle: GoogleFonts.sourceCodePro(
               fontSize: 13.sp,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[600],
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -174,7 +166,7 @@ class _StatusSection extends StatelessWidget {
       children: [
         TimelineItem(
           icon: Icons.check_circle_rounded,
-          color: theme.disabledColor, 
+          color: theme.disabledColor,
           title: 'Transaksi Dibuat',
           subtitle: DateFormat('d MMM yyyy, HH:mm').format(bon.createdAt),
           isLast: !bon.isPaid,
@@ -183,7 +175,7 @@ class _StatusSection extends StatelessWidget {
         if (bon.isPaid)
           TimelineItem(
             icon: Icons.check_circle_rounded,
-            color: Colors.green,
+            color: AppColors.success,
             title: 'Pembayaran Lunas',
             subtitle: bon.paidAt != null
                 ? DateFormat('d MMM yyyy, HH:mm').format(bon.paidAt!)

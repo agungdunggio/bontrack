@@ -1,3 +1,4 @@
+import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:bontrack/core/models/bon_model.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AmountHeaderWidget extends StatelessWidget {
   final BonModel bon;
-  final bool isPiutang;
+  final BonType type;
   final ThemeData theme;
 
   const AmountHeaderWidget({
     required this.bon,
-    required this.isPiutang,
+    required this.type,
     required this.theme,
   });
 
@@ -19,7 +20,7 @@ class AmountHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedAmount = CurrencyFormatter.format(bon.amount);
 
-    final statusColor = isPiutang ? Colors.green : Colors.orange;
+    final statusColor = bonTypeColor(type);
 
     Color badgeColor;
     String badgeText;
@@ -29,11 +30,11 @@ class AmountHeaderWidget extends StatelessWidget {
       badgeText = 'LUNAS';
     } else {
       badgeColor = statusColor;
-      badgeText = isPiutang ? 'PIUTANG' : 'UTANG';
+      badgeText = type == BonType.piutang ? 'PIUTANG' : 'UTANG';
     }
 
-    final otherMxName = isPiutang ? bon.debtorName : bon.creditorName;
-    final relationText = isPiutang ? 'dari ' : 'ke ';
+    final otherMxName = type == BonType.piutang ? bon.debtorName : bon.creditorName;
+    final relationText = type == BonType.piutang ? 'dari ' : 'ke ';
 
     return Column(
       children: [

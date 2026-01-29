@@ -1,6 +1,7 @@
 import 'package:bontrack/core/cubit/auth/auth_cubit.dart';
 import 'package:bontrack/core/cubit/auth/auth_state.dart';
 import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
+import 'package:bontrack/core/constants/color_constants.dart';
 import 'package:bontrack/core/cubit/bon/bon_state.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
 import 'package:bontrack/core/utils/phone_utils.dart';
@@ -149,20 +150,24 @@ class _AddBonScreenState extends State<AddBonScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         leading: IconButton(
-          icon: Icon(Icons.close_rounded, size: 24.sp, color: Colors.black87),
+          icon: Icon(
+            Icons.close_rounded,
+            size: 24.sp,
+            color: theme.appBarTheme.foregroundColor,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Catat Utang',
-          style: GoogleFonts.poppins(
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 16.sp,
-            color: Colors.black87,
+            color: theme.appBarTheme.foregroundColor,
           ),
         ),
         centerTitle: true,
@@ -170,9 +175,9 @@ class _AddBonScreenState extends State<AddBonScreen> {
       body: BlocListener<BonCubit, BonState>(
         listener: (context, state) {
           if (state is BonError) {
-            _showSnackBar(state.message, Colors.red);
+            _showSnackBar(state.message, theme.colorScheme.error);
           } else if (state is BonLoaded) {
-            _showSnackBar('Berhasil disimpan', Colors.green);
+            _showSnackBar('Berhasil disimpan', AppColors.success);
             Navigator.of(context).pop();
           }
         },
@@ -193,9 +198,9 @@ class _AddBonScreenState extends State<AddBonScreen> {
                         // Amount Input Section
                         Text(
                           'Berapa jumlahnya?',
-                          style: GoogleFonts.poppins(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: 14.sp,
-                            color: Colors.grey[600],
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -205,28 +210,32 @@ class _AddBonScreenState extends State<AddBonScreen> {
                             controller: _amountController,
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
+                            style: theme.textTheme.headlineMedium?.copyWith(
                               fontSize: 40.sp,
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.primary,
                             ),
                             decoration: InputDecoration(
                               hintText: '0',
-                              hintStyle: GoogleFonts.poppins(
-                                fontSize: 40.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[300],
-                              ),
+                              hintStyle: theme.textTheme.headlineMedium
+                                  ?.copyWith(
+                                    fontSize: 40.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.onSurfaceVariant
+                                        .withOpacity(0.3),
+                                  ),
                               prefixText: 'Rp ',
-                              prefixStyle: GoogleFonts.poppins(
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w600,
-                                color: theme.colorScheme.primary,
-                              ),
+                              prefixStyle: theme.textTheme.headlineMedium
+                                  ?.copyWith(
+                                    fontSize: 24.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: theme.colorScheme.primary,
+                                  ),
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               contentPadding: EdgeInsets.zero,
+                              filled: false,
                             ),
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(15),
@@ -245,17 +254,16 @@ class _AddBonScreenState extends State<AddBonScreen> {
 
                         SizedBox(height: 48.h),
 
-                        // Form Fields Container
                         // Name Input
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Siapa yang berutang?',
-                              style: GoogleFonts.poppins(
+                              style: theme.textTheme.titleSmall?.copyWith(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.black87,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                             SizedBox(height: 12.h),
@@ -263,21 +271,21 @@ class _AddBonScreenState extends State<AddBonScreen> {
                               controller: _nameController,
                               readOnly: _isContactSelected,
                               textCapitalization: TextCapitalization.words,
-                              style: GoogleFonts.poppins(
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 color: _isContactSelected
                                     ? theme.colorScheme.primary
-                                    : Colors.black87,
+                                    : theme.colorScheme.onSurface,
                               ),
                               decoration: InputDecoration(
                                 hintText: 'Masukkan nama',
-                                hintStyle: GoogleFonts.poppins(
-                                  color: Colors.grey[400],
-                                  fontWeight: FontWeight.normal,
+                                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant
+                                      .withOpacity(0.5),
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.inputDecorationTheme.fillColor,
                                 prefixIcon: Icon(
                                   Icons.person_rounded,
                                   color: theme.colorScheme.primary,
@@ -291,7 +299,9 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                         IconButton(
                                           icon: Icon(
                                             Icons.close_rounded,
-                                            color: Colors.grey[400],
+                                            color: theme
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
                                           onPressed: _clearContact,
                                         ),
@@ -299,7 +309,7 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                         margin: EdgeInsets.all(8.w),
                                         decoration: BoxDecoration(
                                           color: theme.colorScheme.primary
-                                              .withValues(alpha: 0.1),
+                                              .withOpacity(0.1),
                                           borderRadius: BorderRadius.circular(
                                             12.r,
                                           ),
@@ -326,14 +336,16 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                                   SizedBox(width: 8.w),
                                                   Text(
                                                     'Kontak',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 12.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: theme
-                                                          .colorScheme
-                                                          .primary,
-                                                    ),
+                                                    style: theme
+                                                        .textTheme
+                                                        .labelLarge
+                                                        ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: theme
+                                                              .colorScheme
+                                                              .primary,
+                                                        ),
                                                   ),
                                                 ],
                                               ],
@@ -355,9 +367,8 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16.r),
                                   borderSide: BorderSide(
-                                    color: theme.colorScheme.primary.withValues(
-                                      alpha: 0.5,
-                                    ),
+                                    color: theme.colorScheme.primary
+                                        .withOpacity(0.5),
                                     width: 1.5,
                                   ),
                                 ),
@@ -379,16 +390,19 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                     Icon(
                                       Icons.phone_iphone_rounded,
                                       size: 14.sp,
-                                      color: Colors.grey[500],
+                                      color: theme.colorScheme.onSurfaceVariant,
                                     ),
                                     SizedBox(width: 6.w),
                                     Text(
                                       _selectedPhoneNumber!,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 13.sp,
-                                        color: Colors.grey[600],
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            fontSize: 13.sp,
+                                            color: theme
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -405,10 +419,10 @@ class _AddBonScreenState extends State<AddBonScreen> {
                           children: [
                             Text(
                               'Catatan',
-                              style: GoogleFonts.poppins(
+                              style: theme.textTheme.titleSmall?.copyWith(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.black87,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                             SizedBox(height: 12.h),
@@ -416,24 +430,23 @@ class _AddBonScreenState extends State<AddBonScreen> {
                               controller: _descriptionController,
                               textCapitalization: TextCapitalization.sentences,
                               maxLines: 3,
-                              style: GoogleFonts.poppins(
+                              style: theme.textTheme.bodyMedium?.copyWith(
                                 fontSize: 15.sp,
-                                color: Colors.black87,
+                                color: theme.colorScheme.onSurface,
                               ),
                               decoration: InputDecoration(
                                 hintText: 'Tulis keterangan (opsional)',
-                                hintStyle: GoogleFonts.poppins(
-                                  color: Colors.grey[400],
+                                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant
+                                      .withOpacity(0.5),
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.inputDecorationTheme.fillColor,
                                 prefixIcon: Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 40.h,
-                                  ), // Align icon to top
+                                  padding: EdgeInsets.only(bottom: 40.h),
                                   child: Icon(
                                     Icons.notes_rounded,
-                                    color: Colors.grey[500],
+                                    color: theme.colorScheme.onSurfaceVariant,
                                     size: 22.sp,
                                   ),
                                 ),
@@ -448,9 +461,8 @@ class _AddBonScreenState extends State<AddBonScreen> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16.r),
                                   borderSide: BorderSide(
-                                    color: theme.colorScheme.primary.withValues(
-                                      alpha: 0.5,
-                                    ),
+                                    color: theme.colorScheme.primary
+                                        .withOpacity(0.5),
                                     width: 1.5,
                                   ),
                                 ),
@@ -478,7 +490,7 @@ class _AddBonScreenState extends State<AddBonScreen> {
                       onPressed: isLoading ? null : _submit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: Colors.white,
+                        foregroundColor: theme.colorScheme.onPrimary,
                         minimumSize: Size(double.infinity, 56.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16.r),
@@ -489,16 +501,17 @@ class _AddBonScreenState extends State<AddBonScreen> {
                           ? SizedBox(
                               width: 24.w,
                               height: 24.w,
-                              child: const CircularProgressIndicator(
-                                color: Colors.white,
+                              child: CircularProgressIndicator(
+                                color: theme.colorScheme.onPrimary,
                                 strokeWidth: 2.5,
                               ),
                             )
                           : Text(
                               'Simpan Transaksi',
-                              style: GoogleFonts.poppins(
+                              style: theme.textTheme.titleMedium?.copyWith(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onPrimary,
                               ),
                             ),
                     );

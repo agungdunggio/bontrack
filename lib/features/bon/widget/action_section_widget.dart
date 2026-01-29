@@ -1,3 +1,4 @@
+import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,7 +6,7 @@ import 'package:bontrack/core/models/bon_model.dart';
 
 class ActionSectionWidget extends StatelessWidget {
   final BonModel bon;
-  final bool isPiutang;
+  final BonType type;
   final ThemeData theme;
   final Color surfaceColor;
   final VoidCallback? onMarkAsPaid;
@@ -13,7 +14,7 @@ class ActionSectionWidget extends StatelessWidget {
   const ActionSectionWidget({
     super.key,
     required this.bon,
-    required this.isPiutang,
+    required this.type,
     required this.theme,
     required this.surfaceColor,
     this.onMarkAsPaid,
@@ -23,16 +24,16 @@ class ActionSectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (bon.isPaid) return const SizedBox.shrink();
 
-    final label = isPiutang
+    final label = type == BonType.piutang
         ? 'Tandai Sudah Lunas'
         : 'Ajukan Pelunasan - on development';
-    final buttonColor = isPiutang ? Colors.green : Colors.orange;
+    final buttonColor = bonTypeColor(type);
 
     return Container(
       padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
       decoration: BoxDecoration(color: Colors.transparent),
       child: ElevatedButton(
-        onPressed: isPiutang ? () => _showConfirmationDialog(context) : null,
+        onPressed: type == BonType.piutang ? () => _showConfirmationDialog(context) : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: buttonColor,
           foregroundColor: Colors.white,

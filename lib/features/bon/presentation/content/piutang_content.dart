@@ -2,6 +2,7 @@ import 'package:bontrack/core/cubit/auth/auth_cubit.dart';
 import 'package:bontrack/core/cubit/auth/auth_state.dart';
 import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
 import 'package:bontrack/core/cubit/bon/bon_state.dart';
+import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
 import 'package:bontrack/core/utils/date_formatter.dart';
 import 'package:bontrack/features/bon/widget/finance_summary_card_widget.dart';
@@ -178,7 +179,7 @@ class _PiutangContentState extends State<PiutangContent> {
                                 return RowBonWidget(
                                   bon: bon,
                                   index: index,
-                                  isPiutang: true,
+                                  type: BonType.piutang,
                                 );
                               }, childCount: entry.value.length),
                             ),

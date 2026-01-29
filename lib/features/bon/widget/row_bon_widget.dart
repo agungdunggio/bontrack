@@ -1,4 +1,5 @@
 import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
+import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:bontrack/core/models/bon_model.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
 import 'package:bontrack/core/utils/date_formatter.dart';
@@ -11,13 +12,13 @@ import 'package:google_fonts/google_fonts.dart';
 class RowBonWidget extends StatefulWidget {
   final BonModel bon;
   final int index;
-  final bool isPiutang;
+  final BonType type;
 
   const RowBonWidget({
     super.key,
     required this.bon,
     this.index = 0,
-    required this.isPiutang,
+    required this.type,
   });
 
   @override
@@ -68,14 +69,11 @@ class _RowBonWidgetState extends State<RowBonWidget>
   Widget build(BuildContext context) {
     super.build(context);
     // Colors
-    final isPositive = widget.isPiutang;
-    final amountColor = isPositive
-        ? const Color(0xFF11998E)
-        : const Color(0xFFFF512F);
-    final avatarColor = amountColor.withOpacity(0.1);
+    final amountColor = bonTypeColor(widget.type);
+    final avatarColor = amountColor.withValues(alpha: 0.1);
 
     // Data
-    final displayName = widget.isPiutang
+    final displayName = widget.type == BonType.piutang
         ? widget.bon.debtorName
         : widget.bon.creditorName;
     final initials = displayName.isNotEmpty
@@ -95,7 +93,7 @@ class _RowBonWidgetState extends State<RowBonWidget>
               MaterialPageRoute(
                 builder: (context) => BonDetailScreen(
                   bon: widget.bon,
-                  isPiutang: widget.isPiutang,
+                  type: widget.type,
                   onMarkAsPaid: () {
                     context.read<BonCubit>().markAsPaid(widget.bon.id);
                   },

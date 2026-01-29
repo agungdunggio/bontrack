@@ -1,5 +1,6 @@
 import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
 import 'package:bontrack/core/cubit/bon/bon_state.dart';
+import 'package:bontrack/core/enum/bon_enum.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
 import 'package:bontrack/core/utils/date_formatter.dart';
 import 'package:bontrack/features/bon/widget/finance_summary_card_widget.dart';
@@ -108,7 +109,7 @@ class _UtangContentState extends State<UtangContent> {
                         return RowBonWidget(
                           bon: bon,
                           index: index,
-                          isPiutang: false,
+                          type: BonType.utang,
                         );
                       }, childCount: entry.value.length),
                     ),
