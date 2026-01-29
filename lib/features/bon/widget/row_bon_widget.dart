@@ -25,10 +25,13 @@ class RowBonWidget extends StatefulWidget {
 }
 
 class _RowBonWidgetState extends State<RowBonWidget>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -48,7 +51,9 @@ class _RowBonWidgetState extends State<RowBonWidget>
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
-    Future.delayed(Duration(milliseconds: widget.index * 100), () {
+    // Clamp delay to max 5 items staggered to prevent long waits on scroll
+    final delay = (widget.index > 5 ? 5 : widget.index) * 100;
+    Future.delayed(Duration(milliseconds: delay), () {
       if (mounted) _controller.forward();
     });
   }
@@ -61,6 +66,7 @@ class _RowBonWidgetState extends State<RowBonWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     // Colors
     final isPositive = widget.isPiutang;
     final amountColor = isPositive
