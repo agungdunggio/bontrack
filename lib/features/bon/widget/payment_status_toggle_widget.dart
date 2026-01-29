@@ -20,10 +20,16 @@ class PaymentStatusToggleWidget extends StatelessWidget {
     const double padding = 2;
     const double knobSize = height - (padding * 2);
 
-    final backgroundColor = isPaid ? Colors.green[50] : Colors.orange[50];
+    final backgroundColor = isPaid
+        ? const Color(0xFFE8F5E9)
+        : const Color(0xFFF5F5F5);
     final knobColor = Colors.white;
-    final activeColor = isPaid ? Colors.green : Colors.orange;
-    final textColor = isPaid ? Colors.green[700] : Colors.orange[700];
+    final activeColor = isPaid
+        ? const Color(0xFF4CAF50)
+        : const Color(0xFF9E9E9E);
+    final textColor = isPaid
+        ? const Color(0xFF2E7D32)
+        : const Color(0xFF757575);
 
     return GestureDetector(
       onTap: () {

@@ -8,4 +8,8 @@ class DateFormatter {
   static String formatShortDate(DateTime date) {
     return shortDate.format(date);
   }
+
+  static String formatMonthYear(DateTime date) {
+    return DateFormat('MMMM yyyy', 'id_ID').format(date);
+  }
 }

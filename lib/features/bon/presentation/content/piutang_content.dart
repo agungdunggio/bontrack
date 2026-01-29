@@ -3,8 +3,9 @@ import 'package:bontrack/core/cubit/auth/auth_state.dart';
 import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
 import 'package:bontrack/core/cubit/bon/bon_state.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
+import 'package:bontrack/core/utils/date_formatter.dart';
 import 'package:bontrack/features/bon/widget/finance_summary_card_widget.dart';
-import 'package:bontrack/features/bon/widget/piutang_card_widget.dart';
+import 'package:bontrack/features/bon/widget/row_bon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -99,6 +100,15 @@ class _PiutangContentState extends State<PiutangContent> {
                   (sum, item) => sum + item.amount,
                 );
 
+                Map<String, List<dynamic>> groupedBon = {};
+                for (var bon in piutangList) {
+                  final key = DateFormatter.formatMonthYear(bon.createdAt);
+                  if (!groupedBon.containsKey(key)) {
+                    groupedBon[key] = [];
+                  }
+                  groupedBon[key]!.add(bon);
+                }
+
                 return RefreshIndicator(
                   onRefresh: () async {
                     _startListening();
@@ -113,7 +123,7 @@ class _PiutangContentState extends State<PiutangContent> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: FinanceSummaryCardWidget(
                                 title: !widget.isHistory
                                     ? 'Total Piutang'
@@ -138,21 +148,43 @@ class _PiutangContentState extends State<PiutangContent> {
                           child: _buildEmptyState(),
                         )
                       else
-                        SliverPadding(
-                          padding: EdgeInsets.all(16.w),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate((
-                              context,
-                              index,
-                            ) {
-                              final bon = piutangList[index];
-                              return PiutangCardWidget(
-                                bon: bon,
-                                index: index,
-                              );
-                            }, childCount: piutangList.length),
+                        for (var entry in groupedBon.entries) ...[
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                20.w,
+                                24.h,
+                                20.w,
+                                8.h,
+                              ),
+                              child: Text(
+                                entry.key,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          SliverPadding(
+                            padding: EdgeInsets.symmetric(horizontal: 0.w),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final bon = entry.value[index];
+                                return RowBonWidget(
+                                  bon: bon,
+                                  index: index,
+                                  isPiutang: true,
+                                );
+                              }, childCount: entry.value.length),
+                            ),
+                          ),
+                        ],
+                      SliverPadding(padding: EdgeInsets.only(bottom: 20.h)),
                     ],
                   ),
                 );

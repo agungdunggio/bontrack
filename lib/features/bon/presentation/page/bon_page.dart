@@ -91,18 +91,15 @@ class _BonPageState extends State<BonPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.small(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddBonScreen()),
           );
         },
-        icon: const Icon(Icons.add),
-        label: Text(
-          'Tambah',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
+        tooltip: 'Tambah Piutang',
+        child: const Icon(Icons.add),
       ),
     );
   }

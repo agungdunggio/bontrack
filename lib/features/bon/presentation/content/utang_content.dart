@@ -1,8 +1,9 @@
 import 'package:bontrack/core/cubit/bon/bon_cubit.dart';
 import 'package:bontrack/core/cubit/bon/bon_state.dart';
 import 'package:bontrack/core/utils/currency_formatter.dart';
+import 'package:bontrack/core/utils/date_formatter.dart';
 import 'package:bontrack/features/bon/widget/finance_summary_card_widget.dart';
-import 'package:bontrack/features/bon/widget/utang_card_widget.dart';
+import 'package:bontrack/features/bon/widget/row_bon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,11 @@ class UtangContent extends StatefulWidget {
   final double paddingTop;
   final bool isHistory;
 
-  const UtangContent({super.key, this.paddingTop = 0, required this.isHistory});
+  const UtangContent({
+    super.key,
+    this.paddingTop = 0,
+    required this.isHistory,
+  });
 
   @override
   State<UtangContent> createState() => _UtangContentState();
@@ -37,10 +42,21 @@ class _UtangContentState extends State<UtangContent> {
             (sum, item) => sum + item.amount,
           );
 
+          Map<String, List<dynamic>> groupedBon = {};
+          for (var bon in utangList) {
+            final key = DateFormatter.formatMonthYear(bon.createdAt);
+            if (!groupedBon.containsKey(key)) {
+              groupedBon[key] = [];
+            }
+            groupedBon[key]!.add(bon);
+          }
+
           return CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              SliverPadding(padding: EdgeInsets.only(top: widget.paddingTop)),
+              SliverPadding(
+                padding: EdgeInsets.only(top: widget.paddingTop),
+              ),
               SliverToBoxAdapter(
                 child: Column(
                   children: [
@@ -70,24 +86,35 @@ class _UtangContentState extends State<UtangContent> {
                   child: _buildEmptyState(),
                 )
               else
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 20.h,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final bon = utangList[index];
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 12.h),
-                        child: UtangCardWidget(
-                          bon: bon,
-                          index: index, // Pass index for staggered animation
+                for (var entry in groupedBon.entries) ...[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 8.h),
+                      child: Text(
+                        entry.key,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
                         ),
-                      );
-                    }, childCount: utangList.length),
+                      ),
+                    ),
                   ),
-                ),
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 0.w),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final bon = entry.value[index];
+                        return RowBonWidget(
+                          bon: bon,
+                          index: index,
+                          isPiutang: false,
+                        );
+                      }, childCount: entry.value.length),
+                    ),
+                  ),
+                ],
+              SliverPadding(padding: EdgeInsets.only(bottom: 20.h)),
             ],
           );
         }
